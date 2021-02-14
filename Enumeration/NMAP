@@ -22,3 +22,68 @@
 
 ## ftp bounce scan
 - `nmap -P0 -n -b username:password@target-ip target2-ip --proxies socks4://proxy-ip:1080 -vvvv`
+
+## ARP ping with nmap
+- `nmap -sP -PR 10.11.1.0/24 -oG nmap-arp.txt
+
+nmap -sP 10.195.0.0/16 // ping discovery scan
+  
+## NMAP Service and OS Detection
+nmap -sT -A -sV --version-intensity 6 -p- 192.168.31.149
+
+nmap -sTU -A 192.168.1.1   // Os and services for TCP and UDP
+nmap -sV 192.168.1.1    // service detection
+nmap -sV --version-intensity 5 192.168.1.1 // service detection agressive. 0 is less agressive
+
+== PORT SCANNING ==
+## nmap -sS is the default scanning mode // TCP SYN SCAN
+nmap -iL list-of-ips.txt    //scan the targets from the text file
+nmap 192.168.1.1 /24   //scan a subnet
+nmap -F 192.168.1.1   //scan most common 100 ports. Fast.
+nmap -p 100-200 192.168.1.1   // scan a range of ports
+nmap -p- 192.168.1.1    // scan all ports
+nmap -Pn -F 192.168.1.1   //scan selected ports and ignore discovery
+
+## Other NMAP parameters
+-oN outputfile.txt    // save as txt
+--script=ssl-heartbleed // checks for heartbleed
+
+    == Unicorn scans ==  // port scanner
+us -H -msf -Iv 192.168.56.101 -p 1-65535  ## TCP connect SYN scan
+us -H -mU -Iv 192.168.56.101 -p 1-65535   ## UDP scan
+
+## -H = resolve hostnames 
+## -m = scan mode (sf - tcp, U - udp)
+## -Iv - verbose
+
+## Locate NSE scripts
+locate nse | grep script
+
+== WEB DIRECTORY ENUMERATION ==
+## searches for known files, like robots.txt, .htaccess, .htpasswd, etc
+nmap --script http-enum 192.168.10.55  
+
+## brute force a directory with custom wordlists
+nmap -p80 --script=http-brute --script-args 'http-brute.path=/printers/, userdb=/usr/share/wordlists/metasploit/http_default_users.txt, passdb=/usr/share/wordlists/rockyou.txt' 192.168.x.x   
+
+## HTTP brute force a protected directory. Auditing against http basic, digest and ntlm authentication.
+## This script uses the unpwdb and brute libraries to perform password guessing
+nmap -p80 --script http-brute --script-args http-brute.path=/printers/ 192.168.x.x
+
+## Discovers hostnames that resolve to the target's IP address by querying the online database at www.bfk.de
+nmap --script -http-enum --script-args http-enum.basepath='pub/' 192.168.x.x
+
+## WEB page headers
+nmap --script=http-headers 192.168.1.0/24
+
+## WEB page titles from a subnet of IPs
+nmap --script http-title -sV -p 80 192.168.1.0/24  
+
+  == DNS enumeration ==
+nmap -sU -p 22 --script=*dns* 192.168.1.200
+
+## find DNS (A) records by trying a list of common sub-domains from a wordlist.
+nmap -p 80 --script dns-brute.nse domain.com
+
+  == SSH server info ==
+nmap --script=ssh2-enum-algos,ssh-hostkey,sshv1.nse 192.168.13.234 
