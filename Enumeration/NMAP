@@ -1,0 +1,24 @@
+# nmap
+- service: all
+- tactics: enumeration
+
+## enumerate services and use default scripts  
+- `nmap -sC -sV -oN normal.txt target-ip`
+
+## scan all tcp ports  
+- `nmap -p- -oN all_ports.txt target-ip`
+
+## scan all udp ports  
+- `nmap -p- -sU -oN all_udp_ports.txt target-ip`
+
+## use script categories  
+- `nmap --scripts vuln,safe,discovery -oN scan.txt target-ip`
+
+## list all nse scripts  
+- `ls -lh /usr/share/nmap/scripts/`
+
+## nmap through socks4 proxy  
+- `nmap --proxies socks4://proxy-ip:1080 target-ip`
+
+## ftp bounce scan
+- `nmap -P0 -n -b username:password@target-ip target2-ip --proxies socks4://proxy-ip:1080 -vvvv`
